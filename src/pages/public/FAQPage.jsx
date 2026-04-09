@@ -8,15 +8,20 @@ import FAQCategoryFilter from "../../components/faq/FAQCategoryFilter";
 import FAQAccordion from "../../components/faq/FAQAccordion";
 import QuickLinks from "../../components/faq/QuickLinks";
 
-
-import { faqCategories, faqSections, quickLinks } from "../../utils/faqData";
+import { faqCategories, quickLinks } from "../../utils/faqData";
+import { buildPublicFaqSections } from "../../utils/faqHelpers";
+import { useFAQAdmin } from "../../context/FAQAdminContext";
 
 export default function FAQPage() {
+  const { faqs } = useFAQAdmin();
+
   const [searchTerm, setSearchTerm] = useState("");
   const [activeCategory, setActiveCategory] = useState("all");
 
+  const publicSections = useMemo(() => buildPublicFaqSections(faqs), [faqs]);
+
   const filteredSections = useMemo(() => {
-    return faqSections
+    return publicSections
       .filter((section) =>
         activeCategory === "all" ? true : section.id === activeCategory
       )
@@ -35,7 +40,7 @@ export default function FAQPage() {
         };
       })
       .filter((section) => section.items.length > 0);
-  }, [searchTerm, activeCategory]);
+  }, [publicSections, searchTerm, activeCategory]);
 
   const clearSearch = () => {
     setSearchTerm("");

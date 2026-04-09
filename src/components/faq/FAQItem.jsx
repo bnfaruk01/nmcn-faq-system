@@ -8,10 +8,20 @@ export default function FAQItem({ item, isOpen, onToggle }) {
 
       <div
         className="faq-answer"
-        style={{ maxHeight: isOpen ? "300px" : "0px" }}
+        style={{ maxHeight: isOpen ? "320px" : "0px" }}
       >
         <div className="faq-answer-inner">
           <p>{item.answer}</p>
+
+          {item.relatedLinkLabel && item.relatedLinkUrl && (
+            <a
+              href={item.relatedLinkUrl}
+              target="_blank"
+              rel="noreferrer"
+            >
+              {item.relatedLinkLabel}
+            </a>
+          )}
         </div>
       </div>
     </div>
