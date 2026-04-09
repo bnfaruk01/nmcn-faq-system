@@ -424,6 +424,12 @@
   transform: translateY(-1px);
 }
 
+.admin-link-btn {
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
 .admin-form-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);

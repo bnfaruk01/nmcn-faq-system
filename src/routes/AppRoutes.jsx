@@ -13,6 +13,7 @@ import ChatbotLogsPage from "../pages/admin/ChatbotLogsPage";
 import TicketsPage from "../pages/admin/TicketsPage";
 import AnalyticsPage from "../pages/admin/AnalyticsPage";
 import SettingsPage from "../pages/admin/SettingsPage";
+import EditFAQPage from "../pages/admin/EditFAQPage";
 
 export default function AppRoutes() {
   return (
@@ -25,6 +26,7 @@ export default function AppRoutes() {
         <Route path="/admin/dashboard" element={<DashboardPage />} />
         <Route path="/admin/faqs" element={<FAQManagementPage />} />
         <Route path="/admin/faqs/new" element={<AddFAQPage />} />
+        <Route path="/admin/faqs/:id/edit" element={<EditFAQPage />} />
         <Route path="/admin/categories" element={<CategoryPage />} />
         <Route path="/admin/chatbot-logs" element={<ChatbotLogsPage />} />
         <Route path="/admin/tickets" element={<TicketsPage />} />

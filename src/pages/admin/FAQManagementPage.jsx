@@ -2,15 +2,17 @@ import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import AdminLayout from "../../layouts/AdminLayout";
 import FAQTable from "../../components/admin/FAQTable";
-import { adminFaqs } from "../../utils/adminFaqData";
+import { useFAQAdmin } from "../../context/FAQAdminContext";
 
 export default function FAQManagementPage() {
+  const { faqs, deleteFaq } = useFAQAdmin();
+
   const [searchTerm, setSearchTerm] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("All");
   const [statusFilter, setStatusFilter] = useState("All");
 
   const filteredFaqs = useMemo(() => {
-    return adminFaqs.filter((faq) => {
+    return faqs.filter((faq) => {
       const matchesSearch = faq.question
         .toLowerCase()
         .includes(searchTerm.toLowerCase());
@@ -23,7 +25,14 @@ export default function FAQManagementPage() {
 
       return matchesSearch && matchesCategory && matchesStatus;
     });
-  }, [searchTerm, categoryFilter, statusFilter]);
+  }, [faqs, searchTerm, categoryFilter, statusFilter]);
+
+  const handleDelete = (id) => {
+    const confirmed = window.confirm("Are you sure you want to delete this FAQ?");
+    if (confirmed) {
+      deleteFaq(id);
+    }
+  };
 
   return (
     <AdminLayout
@@ -73,7 +82,7 @@ export default function FAQManagementPage() {
         </div>
       </div>
 
-      <FAQTable faqs={filteredFaqs} />
+      <FAQTable faqs={filteredFaqs} onDelete={handleDelete} />
     </AdminLayout>
   );
 }
