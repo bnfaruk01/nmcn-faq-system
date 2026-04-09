@@ -1,0 +1,42 @@
+export const adminFaqs = [
+  {
+    id: 1,
+    question: "How do I renew my licence?",
+    category: "Licensing",
+    status: "Published",
+    updatedAt: "2026-04-08",
+    featured: true,
+  },
+  {
+    id: 2,
+    question: "I forgot my password. What should I do?",
+    category: "Portal Access",
+    status: "Published",
+    updatedAt: "2026-04-07",
+    featured: false,
+  },
+  {
+    id: 3,
+    question: "How can I verify certificates?",
+    category: "Verification",
+    status: "Draft",
+    updatedAt: "2026-04-06",
+    featured: false,
+  },
+  {
+    id: 4,
+    question: "What should I do if my registration number cannot be found?",
+    category: "Registration",
+    status: "Published",
+    updatedAt: "2026-04-05",
+    featured: true,
+  },
+  {
+    id: 5,
+    question: "Can I update my profile if my licence has not expired?",
+    category: "Licensing",
+    status: "Draft",
+    updatedAt: "2026-04-04",
+    featured: false,
+  },
+];
