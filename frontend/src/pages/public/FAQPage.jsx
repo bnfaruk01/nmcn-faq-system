@@ -29,8 +29,8 @@ export default function FAQPage() {
         const data = await fetchPublicFaqs();
         setFaqs(data);
       } catch (err) {
-        console.error(err);
-        setError("Failed to load FAQs.");
+        console.error("FAQ load error:", err);
+        setError(err.message || "Failed to load FAQs.");
       } finally {
         setLoading(false);
       }
