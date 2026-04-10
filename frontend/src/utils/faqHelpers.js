@@ -1,18 +1,18 @@
 export function buildPublicFaqSections(faqs) {
-  const publishedFaqs = faqs.filter((faq) => faq.status === "Published");
-
   const categoryMap = {
     Licensing: {
       id: "licensing",
       title: "Licensing and Renewal",
-      description: "Answers related to licence renewal, penalties, and profile updates.",
+      description:
+        "Answers related to licence renewal, penalties, and profile updates.",
       badge: "Licensing",
       items: [],
     },
     Registration: {
       id: "registration",
       title: "Registration",
-      description: "Questions on registration, profile matching, and public usage.",
+      description:
+        "Questions on registration, profile matching, and public usage.",
       badge: "Registration",
       items: [],
     },
@@ -26,7 +26,8 @@ export function buildPublicFaqSections(faqs) {
     Verification: {
       id: "verification",
       title: "Verification and Public Services",
-      description: "Questions about certificate verification and public service links.",
+      description:
+        "Questions about certificate verification and public service links.",
       badge: "Verification",
       items: [],
     },
@@ -39,18 +40,20 @@ export function buildPublicFaqSections(faqs) {
     },
   };
 
-  publishedFaqs.forEach((faq) => {
+  faqs.forEach((faq) => {
     if (categoryMap[faq.category]) {
       categoryMap[faq.category].items.push({
         id: faq.id,
         question: faq.question,
         answer: faq.answer,
-        relatedLinkLabel: faq.relatedLinkLabel,
-        relatedLinkUrl: faq.relatedLinkUrl,
+        relatedLinkLabel: faq.related_link_label,
+        relatedLinkUrl: faq.related_link_url,
         featured: faq.featured,
       });
     }
   });
 
-  return Object.values(categoryMap).filter((section) => section.items.length > 0);
+  return Object.values(categoryMap).filter(
+    (section) => section.items.length > 0
+  );
 }

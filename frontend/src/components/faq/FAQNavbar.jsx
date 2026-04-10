@@ -26,7 +26,7 @@ export default function FAQNavbar() {
           <div className="faq-navbar-inner html-style-navbar">
             <div className="faq-brand-wrap">
               <img
-                src="/public/images/nmcn-logo.png"
+                src="/images/nmcn-logo.png"
                 alt="Nursing and Midwifery Council of Nigeria Logo"
                 className="faq-real-logo"
               />

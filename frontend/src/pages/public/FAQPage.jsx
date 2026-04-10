@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import "../../assets/styles/faq.css";
 
 import FAQNavbar from "../../components/faq/FAQNavbar";
@@ -10,13 +10,34 @@ import QuickLinks from "../../components/faq/QuickLinks";
 
 import { faqCategories, quickLinks } from "../../utils/faqData";
 import { buildPublicFaqSections } from "../../utils/faqHelpers";
-import { useFAQAdmin } from "../../context/FAQAdminContext";
+import { fetchPublicFaqs } from "../../services/faqService";
 
 export default function FAQPage() {
-  const { faqs } = useFAQAdmin();
+  const [faqs, setFaqs] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   const [searchTerm, setSearchTerm] = useState("");
   const [activeCategory, setActiveCategory] = useState("all");
+
+  useEffect(() => {
+    const loadFaqs = async () => {
+      try {
+        setLoading(true);
+        setError("");
+
+        const data = await fetchPublicFaqs();
+        setFaqs(data);
+      } catch (err) {
+        console.error(err);
+        setError("Failed to load FAQs.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadFaqs();
+  }, []);
 
   const publicSections = useMemo(() => buildPublicFaqSections(faqs), [faqs]);
 
@@ -84,7 +105,11 @@ export default function FAQPage() {
             </aside>
 
             <section className="faq-content" id="faq-content">
-              {filteredSections.length > 0 ? (
+              {loading ? (
+                <div className="faq-empty">Loading FAQs...</div>
+              ) : error ? (
+                <div className="faq-empty">{error}</div>
+              ) : filteredSections.length > 0 ? (
                 filteredSections.map((section) => (
                   <div className="faq-section-box" key={section.id}>
                     <div className="faq-section-header">
