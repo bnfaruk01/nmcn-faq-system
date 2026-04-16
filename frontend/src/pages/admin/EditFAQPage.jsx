@@ -1,31 +1,54 @@
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import AdminLayout from "../../layouts/AdminLayout";
 import FAQForm from "../../components/admin/FAQForm";
-import { useFAQAdmin } from "../../context/FAQAdminContext";
+import { fetchFaqById, updateFaq } from "../../services/faqService";
 
 export default function EditFAQPage() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { getFaqById, updateFaq } = useFAQAdmin();
 
-  const faq = getFaqById(id);
+  const [faq, setFaq] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-  if (!faq) {
-    return (
-      <AdminLayout
-        title="Edit FAQ"
-        subtitle="Update an existing FAQ entry."
-      >
-        <div className="admin-panel">
-          <h2>FAQ not found</h2>
-        </div>
-      </AdminLayout>
-    );
-  }
+  useEffect(() => {
+    const loadFaq = async () => {
+      try {
+        setLoading(true);
+        setError("");
 
-  const handleUpdateFaq = (formData) => {
-    updateFaq(id, formData);
-    navigate("/admin/faqs");
+        const data = await fetchFaqById(id);
+
+        if (!data) {
+          setError("FAQ not found.");
+          return;
+        }
+
+        setFaq({
+          ...data,
+          relatedLinkLabel: data.related_link_label || "",
+          relatedLinkUrl: data.related_link_url || "",
+        });
+      } catch (err) {
+        console.error(err);
+        setError("Failed to load FAQ.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadFaq();
+  }, [id]);
+
+  const handleUpdateFaq = async (formData) => {
+    try {
+      await updateFaq(id, formData);
+      navigate("/admin/faqs");
+    } catch (err) {
+      console.error(err);
+      alert("Failed to update FAQ.");
+    }
   };
 
   return (
@@ -33,7 +56,17 @@ export default function EditFAQPage() {
       title="Edit FAQ"
       subtitle="Update an existing FAQ entry."
     >
-      <FAQForm initialData={faq} onSubmit={handleUpdateFaq} />
+      {loading ? (
+        <div className="admin-panel">
+          <p>Loading FAQ...</p>
+        </div>
+      ) : error ? (
+        <div className="admin-panel">
+          <p>{error}</p>
+        </div>
+      ) : (
+        <FAQForm initialData={faq} onSubmit={handleUpdateFaq} />
+      )}
     </AdminLayout>
   );
 }

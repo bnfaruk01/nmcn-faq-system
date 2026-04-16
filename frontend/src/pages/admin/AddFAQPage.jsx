@@ -1,15 +1,19 @@
 import { useNavigate } from "react-router-dom";
 import AdminLayout from "../../layouts/AdminLayout";
 import FAQForm from "../../components/admin/FAQForm";
-import { useFAQAdmin } from "../../context/FAQAdminContext";
+import { createFaq } from "../../services/faqService";
 
 export default function AddFAQPage() {
-  const { addFaq } = useFAQAdmin();
   const navigate = useNavigate();
 
-  const handleAddFaq = (formData) => {
-    addFaq(formData);
-    navigate("/admin/faqs");
+  const handleAddFaq = async (formData) => {
+    try {
+      await createFaq(formData);
+      navigate("/admin/faqs");
+    } catch (err) {
+      console.error(err);
+      alert("Failed to create FAQ.");
+    }
   };
 
   return (

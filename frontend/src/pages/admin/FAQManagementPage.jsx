@@ -1,15 +1,35 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import AdminLayout from "../../layouts/AdminLayout";
 import FAQTable from "../../components/admin/FAQTable";
-import { useFAQAdmin } from "../../context/FAQAdminContext";
+import { fetchAllFaqs, deleteFaq as deleteFaqRequest } from "../../services/faqService";
 
 export default function FAQManagementPage() {
-  const { faqs, deleteFaq } = useFAQAdmin();
+  const [faqs, setFaqs] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   const [searchTerm, setSearchTerm] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("All");
   const [statusFilter, setStatusFilter] = useState("All");
+
+  const loadFaqs = async () => {
+    try {
+      setLoading(true);
+      setError("");
+      const data = await fetchAllFaqs();
+      setFaqs(data);
+    } catch (err) {
+      console.error(err);
+      setError(err.message || "Failed to load FAQs.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadFaqs();
+  }, []);
 
   const filteredFaqs = useMemo(() => {
     return faqs.filter((faq) => {
@@ -27,10 +47,16 @@ export default function FAQManagementPage() {
     });
   }, [faqs, searchTerm, categoryFilter, statusFilter]);
 
-  const handleDelete = (id) => {
+  const handleDelete = async (id) => {
     const confirmed = window.confirm("Are you sure you want to delete this FAQ?");
-    if (confirmed) {
-      deleteFaq(id);
+    if (!confirmed) return;
+
+    try {
+      await deleteFaqRequest(id);
+      await loadFaqs();
+    } catch (err) {
+      console.error(err);
+      alert("Failed to delete FAQ.");
     }
   };
 
@@ -82,7 +108,17 @@ export default function FAQManagementPage() {
         </div>
       </div>
 
-      <FAQTable faqs={filteredFaqs} onDelete={handleDelete} />
+      {loading ? (
+        <div className="admin-panel">
+          <p>Loading FAQs...</p>
+        </div>
+      ) : error ? (
+        <div className="admin-panel">
+          <p>{error}</p>
+        </div>
+      ) : (
+        <FAQTable faqs={filteredFaqs} onDelete={handleDelete} />
+      )}
     </AdminLayout>
   );
 }
