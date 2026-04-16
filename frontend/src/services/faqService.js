@@ -1,12 +1,7 @@
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-console.log("API_BASE_URL:", API_BASE_URL);
-
 export async function fetchPublicFaqs() {
-  const url = `${API_BASE_URL}/faqs/public`;
-  console.log("Fetching public FAQs from:", url);
-
-  const response = await fetch(url);
+  const response = await fetch(`${API_BASE_URL}/faqs/public`);
 
   if (!response.ok) {
     throw new Error(`Failed to fetch public FAQs: ${response.status}`);
@@ -23,6 +18,17 @@ export async function fetchAllFaqs() {
   }
 
   return response.json();
+}
+
+export async function fetchFaqById(id) {
+  const response = await fetch(`${API_BASE_URL}/faqs`);
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch FAQs: ${response.status}`);
+  }
+
+  const faqs = await response.json();
+  return faqs.find((faq) => String(faq.id) === String(id));
 }
 
 export async function createFaq(faqData) {
