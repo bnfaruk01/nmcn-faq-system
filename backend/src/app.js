@@ -7,9 +7,10 @@ const app = express();
 app.use(
   cors({
     origin: [
-      "http://localhost:5173",
-      "https://nmcn-faqs.vercel.app",
-    ],
+  "http://localhost:5173",
+  "https://nmcn-faqs.vercel.app",
+  "https://*.vercel.app",
+],
   })
 );
 
