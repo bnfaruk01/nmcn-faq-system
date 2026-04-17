@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-export default function FAQForm({ initialData = null, onSubmit }) {
+export default function FAQForm({ initialData = null, onSubmit, loading = false }) {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -59,7 +59,7 @@ export default function FAQForm({ initialData = null, onSubmit }) {
             value={formData.answer}
             onChange={handleChange}
             placeholder="Enter the full answer that will appear on the public FAQ page"
-          ></textarea>
+          />
         </div>
 
         <div className="admin-form-group">
@@ -135,14 +135,15 @@ export default function FAQForm({ initialData = null, onSubmit }) {
         </div>
 
         <div className="admin-form-actions full">
-          <button type="submit" className="admin-primary-btn">
-            Save FAQ
+          <button type="submit" className="admin-primary-btn" disabled={loading}>
+            {loading ? "Saving..." : "Save FAQ"}
           </button>
 
           <button
             type="button"
             className="admin-secondary-btn"
             onClick={() => navigate("/admin/faqs")}
+            disabled={loading}
           >
             Cancel
           </button>

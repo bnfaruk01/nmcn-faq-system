@@ -1,7 +1,13 @@
+import ErrorBoundary from "./components/common/ErrorBoundary";
+import { BrowserRouter } from "react-router-dom";
 import AppRoutes from "./routes/AppRoutes";
 
-function App() {
-  return <AppRoutes />;
+export default function App() {
+  return (
+    <ErrorBoundary>
+      <BrowserRouter>
+        <AppRoutes />
+      </BrowserRouter>
+    </ErrorBoundary>
+  );
 }
-
-export default App;
