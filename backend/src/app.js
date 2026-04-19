@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const faqRoutes = require("./routes/faqRoutes");
+const chatbotRoutes = require("./routes/chatbotRoutes");
 
 const app = express();
 
@@ -24,5 +25,6 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/faqs", faqRoutes);
+app.use("/api/chatbot", chatbotRoutes);
 
 module.exports = app;

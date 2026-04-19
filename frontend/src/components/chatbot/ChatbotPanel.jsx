@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { askChatbot } from "../../services/faqService";
 import ChatbotMessage from "./ChatbotMessage";
 
 const suggestions = [
@@ -11,23 +12,57 @@ export default function ChatbotPanel({ onClose }) {
   const [messages, setMessages] = useState([
     {
       sender: "bot",
-      text: "Hello. I’m the NMCN AI support assistant. Ask me a question about licensing, registration, portal access, or verification.",
+      text: "Hello. I am the NMCN support assistant. Ask me a question about licensing, registration, portal access, or verification.",
     },
   ]);
 
   const [input, setInput] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const sendMessage = (textToSend = input) => {
-    if (!textToSend.trim()) return;
+  const sendMessage = async (textToSend = input) => {
+    if (!textToSend.trim() || loading) return;
 
-    const userMessage = { sender: "user", text: textToSend };
-    const botReply = {
-      sender: "bot",
-      text: "I’ve received your question. In the next step, we’ll connect this panel to the FAQ database and admin escalation flow.",
-    };
+    const question = textToSend.trim();
 
-    setMessages((prev) => [...prev, userMessage, botReply]);
+    setMessages((prev) => [...prev, { sender: "user", text: question }]);
     setInput("");
+    setLoading(true);
+
+    try {
+      const result = await askChatbot(question);
+
+      if (result.matched) {
+        setMessages((prev) => [
+          ...prev,
+          {
+            sender: "bot",
+            text: result.answer,
+          },
+        ]);
+      } else {
+        setMessages((prev) => [
+          ...prev,
+          {
+            sender: "bot",
+            text:
+              result.message ||
+              "Sorry, I could not find an answer to that. You can send it to support for help.",
+          },
+        ]);
+      }
+    } catch (error) {
+      console.error(error);
+
+      setMessages((prev) => [
+        ...prev,
+        {
+          sender: "bot",
+          text: "Something went wrong. Please try again.",
+        },
+      ]);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -54,6 +89,12 @@ export default function ChatbotPanel({ onClose }) {
             text={message.text}
           />
         ))}
+
+        {loading && (
+          <div className="chatbot-message bot">
+            Thinking...
+          </div>
+        )}
       </div>
 
       <div className="chatbot-suggestions">
@@ -62,6 +103,7 @@ export default function ChatbotPanel({ onClose }) {
             key={index}
             className="chatbot-chip"
             onClick={() => sendMessage(item)}
+            disabled={loading}
           >
             {item}
           </button>
@@ -78,8 +120,13 @@ export default function ChatbotPanel({ onClose }) {
             onKeyDown={(e) => {
               if (e.key === "Enter") sendMessage();
             }}
+            disabled={loading}
           />
-          <button className="chatbot-send" onClick={() => sendMessage()}>
+          <button
+            className="chatbot-send"
+            onClick={() => sendMessage()}
+            disabled={loading}
+          >
             ➤
           </button>
         </div>

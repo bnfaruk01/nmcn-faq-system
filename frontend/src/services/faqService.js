@@ -75,3 +75,19 @@ export async function deleteFaq(id) {
 
   return response.json();
 }
+
+export async function askChatbot(question) {
+  const response = await fetch(`${API_BASE_URL}/chatbot/ask`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ question }),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to get chatbot response: ${response.status}`);
+  }
+
+  return response.json();
+}
