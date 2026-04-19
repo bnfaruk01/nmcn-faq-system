@@ -7,6 +7,7 @@ import FAQSearchBar from "../../components/faq/FAQSearchBar";
 import FAQCategoryFilter from "../../components/faq/FAQCategoryFilter";
 import FAQAccordion from "../../components/faq/FAQAccordion";
 import QuickLinks from "../../components/faq/QuickLinks";
+import ChatbotLauncher from "../../components/chatbot/ChatbotLauncher";
 
 import { faqCategories, quickLinks } from "../../utils/faqData";
 import { buildPublicFaqSections } from "../../utils/faqHelpers";
@@ -133,6 +134,7 @@ export default function FAQPage() {
           </div>
         </div>
       </main>
+      <ChatbotLauncher />
     </div>
   );
 }
