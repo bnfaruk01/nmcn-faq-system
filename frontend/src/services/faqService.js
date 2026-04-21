@@ -91,3 +91,39 @@ export async function askChatbot(question) {
 
   return response.json();
 }
+
+export async function fetchAllTickets() {
+  const response = await fetch(`${API_BASE_URL}/tickets`);
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch tickets: ${response.status}`);
+  }
+
+  return response.json();
+}
+
+export async function fetchTicketById(id) {
+  const response = await fetch(`${API_BASE_URL}/tickets/${id}`);
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch ticket: ${response.status}`);
+  }
+
+  return response.json();
+}
+
+export async function replyToTicket(id, replyData) {
+  const response = await fetch(`${API_BASE_URL}/tickets/${id}/reply`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(replyData),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to reply to ticket: ${response.status}`);
+  }
+
+  return response.json();
+}

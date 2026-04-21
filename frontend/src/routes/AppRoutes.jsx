@@ -14,6 +14,7 @@ import ChatbotLogsPage from "../pages/admin/ChatbotLogsPage";
 import TicketsPage from "../pages/admin/TicketsPage";
 import AnalyticsPage from "../pages/admin/AnalyticsPage";
 import SettingsPage from "../pages/admin/SettingsPage";
+import TicketDetailPage from "../pages/admin/TicketDetailPage";
 
 export default function AppRoutes() {
   return (
@@ -29,8 +30,10 @@ export default function AppRoutes() {
       <Route path="/admin/categories" element={<CategoryPage />} />
       <Route path="/admin/chatbot-logs" element={<ChatbotLogsPage />} />
       <Route path="/admin/tickets" element={<TicketsPage />} />
+      <Route path="/admin/tickets/:id" element={<TicketDetailPage />} />
       <Route path="/admin/analytics" element={<AnalyticsPage />} />
       <Route path="/admin/settings" element={<SettingsPage />} />
+      
 
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

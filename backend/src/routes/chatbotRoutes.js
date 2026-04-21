@@ -5,7 +5,7 @@ const pool = require("../config/db");
 const STOP_WORDS = new Set([
   "a", "an", "the", "is", "are", "am", "i", "you", "he", "she", "it", "we", "they",
   "how", "what", "when", "where", "why", "can", "could", "do", "does", "did",
-  "to", "of", "for", "in", "on", "at", "my", "your", "our", "their", "be"
+  "to", "of", "for", "in", "on", "at", "my", "your", "our", "their", "be", "please"
 ]);
 
 function cleanText(text) {
@@ -31,34 +31,42 @@ function scoreMatch(userQuestion, faq) {
   const faqCombinedWords = new Set([
     ...getMeaningfulWords(faq.question || ""),
     ...getMeaningfulWords(faq.keywords || ""),
+    ...getMeaningfulWords(faq.category || ""),
   ]);
 
   let score = 0;
 
-  // Strong exact/phrase signals
   if (faqQuestion.includes(input) && input.length > 6) score += 8;
   if (input.includes(faqQuestion) && faqQuestion.length > 6) score += 6;
 
-  // Keyword overlap
   let overlapCount = 0;
   inputWords.forEach((word) => {
-    if (faqCombinedWords.has(word)) {
-      overlapCount += 1;
-    }
+    if (faqCombinedWords.has(word)) overlapCount += 1;
   });
 
   score += overlapCount * 2;
-
-  // Bonus when at least 2 meaningful words overlap
   if (overlapCount >= 2) score += 2;
-
-  // Small bonus for exact keyword phrase match
   if (faqKeywords && input.includes(faqKeywords)) score += 3;
 
-  return {
-    score,
-    overlapCount,
-  };
+  return { score, overlapCount };
+}
+
+async function logEscalation(userQuestion, matchedFaqIds = "", responseText = "") {
+  await pool.query(
+    `
+    INSERT INTO chatbot_logs (user_question, matched_faq_ids, ai_response, escalated)
+    VALUES ($1, $2, $3, $4)
+    `,
+    [userQuestion, matchedFaqIds, responseText, true]
+  );
+
+  await pool.query(
+    `
+    INSERT INTO support_tickets (user_question, status)
+    VALUES ($1, 'Open')
+    `,
+    [userQuestion]
+  );
 }
 
 router.post("/ask", async (req, res) => {
@@ -69,6 +77,28 @@ router.post("/ask", async (req, res) => {
       return res.status(400).json({
         matched: false,
         message: "Please type your question.",
+      });
+    }
+
+    const lowerQuestion = cleanText(question);
+
+    const greetings = [
+      "hello",
+      "hi",
+      "good morning",
+      "good afternoon",
+      "good evening",
+      "how are you",
+      "hey"
+    ];
+
+    if (greetings.includes(lowerQuestion)) {
+      return res.json({
+        matched: true,
+        confidence: 0.95,
+        answer:
+          "Hello dear. I am here to help with NMCN questions like licence renewal, registration, portal access, verification or any NMCN related concern.",
+        source: "greeting",
       });
     }
 
@@ -86,35 +116,47 @@ router.post("/ask", async (req, res) => {
       });
     }
 
-    let bestFaq = null;
-    let bestScore = 0;
-    let bestOverlap = 0;
+    const rankedFaqs = faqs
+      .map((faq) => {
+        const { score, overlapCount } = scoreMatch(question, faq);
+        return { ...faq, score, overlapCount };
+      })
+      .sort((a, b) => b.score - a.score);
 
-    faqs.forEach((faq) => {
-      const { score, overlapCount } = scoreMatch(question, faq);
+    const bestFaq = rankedFaqs[0];
 
-      if (score > bestScore) {
-        bestScore = score;
-        bestOverlap = overlapCount;
-        bestFaq = faq;
-      }
-    });
+    if (!bestFaq || bestFaq.score < 4 || bestFaq.overlapCount < 1) {
+      const fallback =
+        "Sorry, I could not find an answer to that yet. I will send it to support so an admin can help.";
 
-    // Require stronger evidence before returning a match
-    if (!bestFaq || bestScore < 4 || bestOverlap < 1) {
+      await logEscalation(question, "", fallback);
+
       return res.json({
-  matched: false,
-  confidence: 0.2,
-  message:
-    "Sorry, I could not find an answer to that. You can send it to support for help.",
-  escalate: true,
-});
+        matched: false,
+        confidence: 0.2,
+        message: fallback,
+        escalate: true,
+      });
     }
+
+    let answer = bestFaq.answer;
+
+    if (bestFaq.related_link_url) {
+      answer += `\n\n${bestFaq.related_link_label || "Open this link"}: ${bestFaq.related_link_url}`;
+    }
+
+    await pool.query(
+      `
+      INSERT INTO chatbot_logs (user_question, matched_faq_ids, ai_response, escalated)
+      VALUES ($1, $2, $3, $4)
+      `,
+      [question, String(bestFaq.id), answer, false]
+    );
 
     return res.json({
       matched: true,
-      confidence: Number(Math.min(bestScore / 10, 0.99).toFixed(2)),
-      answer: bestFaq.answer,
+      confidence: Number(Math.min(bestFaq.score / 10, 0.99).toFixed(2)),
+      answer,
       question: bestFaq.question,
       category: bestFaq.category,
       sourceId: bestFaq.id,

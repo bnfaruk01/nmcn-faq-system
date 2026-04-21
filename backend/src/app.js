@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const faqRoutes = require("./routes/faqRoutes");
 const chatbotRoutes = require("./routes/chatbotRoutes");
+const ticketRoutes = require("./routes/ticketRoutes");
 
 const app = express();
 
@@ -26,5 +27,6 @@ app.get("/", (req, res) => {
 
 app.use("/api/faqs", faqRoutes);
 app.use("/api/chatbot", chatbotRoutes);
+app.use("/api/tickets", ticketRoutes);
 
 module.exports = app;
