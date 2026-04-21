@@ -6,25 +6,29 @@
 }
 
 .chatbot-launcher {
-  width: 70px;
-  height: 70px;
+  min-width: 122px;
+  height: 56px;
+  padding: 0 18px;
   border: none;
-  border-radius: 50%;
+  border-radius: 999px;
   background: linear-gradient(135deg, #3d9b4f, #2b7439);
   color: white;
-  display: grid;
-  place-items: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
   cursor: pointer;
   box-shadow: 0 14px 30px rgba(31, 109, 52, 0.28);
   transition: all 0.3s ease;
   position: relative;
+  font-weight: 700;
 }
 
 .chatbot-launcher::before {
   content: "";
   position: absolute;
-  inset: -8px;
-  border-radius: 50%;
+  inset: -6px;
+  border-radius: 999px;
   background: rgba(61, 155, 79, 0.18);
   z-index: -1;
 }
@@ -239,8 +243,9 @@
     height: 72vh;
   }
 
-  .chatbot-launcher {
-    width: 62px;
-    height: 62px;
+    .chatbot-launcher {
+    min-width: 112px;
+    height: 52px;
+    padding: 0 16px;
   }
 }
