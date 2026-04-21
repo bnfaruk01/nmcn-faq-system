@@ -51,9 +51,9 @@ export default function FAQNavbar() {
               <a href="https://licence.nmcn.gov.ng/" className="faq-nav-link">
                 Licence Portal
               </a>
-              <Link to="/" className="faq-nav-link active-nav-link">
-                FAQ
-              </Link>
+              <a href="/#faq-content" className="faq-nav-link active-nav-link">
+  FAQ
+</a>
             </nav>
 
             <button
@@ -89,9 +89,13 @@ export default function FAQNavbar() {
             >
               Licence Portal
             </a>
-            <Link to="/" className="faq-mobile-link active" onClick={closeMenu}>
+            <a
+  href="/#faq-content"
+  className="faq-mobile-link active"
+  onClick={closeMenu}
+>
   FAQ
-</Link>
+</a>
 
             <button
   className="faq-mobile-chatbot-btn"

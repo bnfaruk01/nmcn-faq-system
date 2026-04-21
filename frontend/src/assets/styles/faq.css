@@ -515,6 +515,7 @@ a {
 .faq-content {
   display: grid;
   gap: 1.2rem;
+  scroll-margin-top: 110px;
 }
 
 .faq-section-box {

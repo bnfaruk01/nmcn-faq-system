@@ -24,6 +24,20 @@ export default function FAQPage() {
   const { openChatbot } = useChatbot();
 
   useEffect(() => {
+  if (window.location.hash === "#faq-content") {
+    setTimeout(() => {
+      const faqContent = document.getElementById("faq-content");
+      if (faqContent) {
+        faqContent.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }
+    }, 100);
+  }
+}, []);
+
+  useEffect(() => {
     const loadFaqs = async () => {
       try {
         setLoading(true);

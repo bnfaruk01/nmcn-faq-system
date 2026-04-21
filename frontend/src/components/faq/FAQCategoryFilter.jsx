@@ -3,20 +3,33 @@ export default function FAQCategoryFilter({
   activeCategory,
   setActiveCategory,
 }) {
-  return (
-    <div className="faq-card">
-      <h3>FAQ Categories</h3>
+  const handleCategoryClick = (categoryId) => {
+    setActiveCategory(categoryId);
 
-      <div className="faq-filter-list">
+    const faqContent = document.getElementById("faq-content");
+    if (faqContent) {
+      faqContent.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }
+  };
+
+  return (
+    <div className="faq-category-card">
+      <h3>Browse by category</h3>
+
+      <div className="faq-category-list">
         {categories.map((category) => (
           <button
             key={category.id}
-            className={`faq-filter-btn ${
+            className={`faq-category-btn ${
               activeCategory === category.id ? "active" : ""
             }`}
-            onClick={() => setActiveCategory(category.id)}
+            onClick={() => handleCategoryClick(category.id)}
           >
-            {category.label}
+            <span>{category.label}</span>
+            <span>{category.count}</span>
           </button>
         ))}
       </div>
