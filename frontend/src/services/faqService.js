@@ -127,3 +127,19 @@ export async function replyToTicket(id, replyData) {
 
   return response.json();
 }
+
+export async function convertTicketToFaq(id, faqData) {
+  const response = await fetch(`${API_BASE_URL}/tickets/${id}/convert-to-faq`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(faqData),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to convert ticket to FAQ: ${response.status}`);
+  }
+
+  return response.json();
+}
