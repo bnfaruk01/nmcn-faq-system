@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
+import { useChatbot } from "../../context/ChatbotContext";
+
 export default function FAQNavbar() {
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -11,6 +13,8 @@ export default function FAQNavbar() {
   const closeMenu = () => {
     setMenuOpen(false);
   };
+
+  const { openChatbot } = useChatbot();
 
   return (
     <>
@@ -89,9 +93,15 @@ export default function FAQNavbar() {
   FAQ
 </Link>
 
-            <button className="faq-mobile-chatbot-btn" onClick={closeMenu}>
-              Open Chatbot
-            </button>
+            <button
+  className="faq-mobile-chatbot-btn"
+  onClick={() => {
+    closeMenu();
+    openChatbot();
+  }}
+>
+  Open Chat Support
+</button>
           </div>
         </div>
       </header>

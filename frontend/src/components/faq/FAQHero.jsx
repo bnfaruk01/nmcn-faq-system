@@ -1,4 +1,8 @@
+import { useChatbot } from "../../context/ChatbotContext";
+
 export default function FAQHero() {
+  const { openChatbot } = useChatbot();
+
   return (
     <section className="faq-hero">
       <div className="faq-container">
@@ -22,7 +26,8 @@ export default function FAQHero() {
               <a href="#faq-content" className="nmcn-btn nmcn-btn-primary">
                 Browse FAQs
               </a>
-              <button className="nmcn-btn nmcn-btn-secondary">
+
+              <button className="nmcn-btn nmcn-btn-secondary" onClick={openChatbot}>
                 Ask Chat Support
               </button>
             </div>

@@ -8,6 +8,7 @@ import FAQCategoryFilter from "../../components/faq/FAQCategoryFilter";
 import FAQAccordion from "../../components/faq/FAQAccordion";
 import QuickLinks from "../../components/faq/QuickLinks";
 import ChatbotLauncher from "../../components/chatbot/ChatbotLauncher";
+import { useChatbot } from "../../context/ChatbotContext";
 
 import { faqCategories, quickLinks } from "../../utils/faqData";
 import { buildPublicFaqSections } from "../../utils/faqHelpers";
@@ -20,6 +21,7 @@ export default function FAQPage() {
 
   const [searchTerm, setSearchTerm] = useState("");
   const [activeCategory, setActiveCategory] = useState("all");
+  const { openChatbot } = useChatbot();
 
   useEffect(() => {
     const loadFaqs = async () => {
@@ -99,9 +101,28 @@ export default function FAQPage() {
                   team will help guide your request further.
                 </p>
 
-                <button className="nmcn-btn nmcn-btn-primary">
-                  Contact Support
-                </button>
+                <button className="chatbot-support-btn" onClick={openChatbot}>
+  <svg
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M8 18H7L3 21V6C3 4.89543 3.89543 4 5 4H15C16.1046 4 17 4.89543 17 6V8"
+      stroke="white"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M10 17C10 15.8954 10.8954 15 12 15H19C20.1046 15 21 15.8954 21 17V20L18.5 18H12C10.8954 18 10 17.1046 10 16V17Z"
+      fill="white"
+    />
+  </svg>
+  <span>Support</span>
+</button>
               </div>
             </aside>
 

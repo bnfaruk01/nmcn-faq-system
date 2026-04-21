@@ -191,6 +191,29 @@
   opacity: 0.6;
   cursor: not-allowed;
 }
+.chatbot-support-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  border: none;
+  border-radius: 999px;
+  padding: 0.9rem 1.2rem;
+  background: linear-gradient(135deg, #3d9b4f, #2b7439);
+  color: white;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 10px 24px rgba(43, 116, 57, 0.22);
+  transition: all 0.3s ease;
+}
+
+.chatbot-support-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 28px rgba(43, 116, 57, 0.28);
+}
+
+.chatbot-support-btn svg {
+  flex-shrink: 0;
+}
 
 @keyframes chatbotFadeUp {
   from {

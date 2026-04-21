@@ -1,17 +1,17 @@
-import { useState } from "react";
 import "../../assets/styles/chatbot.css";
 import ChatbotPanel from "./ChatbotPanel";
+import { useChatbot } from "../../context/ChatbotContext";
 
 export default function ChatbotLauncher() {
-  const [open, setOpen] = useState(false);
+  const { isChatOpen, toggleChatbot, closeChatbot } = useChatbot();
 
   return (
     <div className="chatbot-root">
-      {open && <ChatbotPanel onClose={() => setOpen(false)} />}
+      {isChatOpen && <ChatbotPanel onClose={closeChatbot} />}
 
       <button
         className="chatbot-launcher"
-        onClick={() => setOpen((prev) => !prev)}
+        onClick={toggleChatbot}
         aria-label="Open chatbot"
       >
         <svg
