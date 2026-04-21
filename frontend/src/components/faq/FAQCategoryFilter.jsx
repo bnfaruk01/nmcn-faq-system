@@ -8,16 +8,17 @@ export default function FAQCategoryFilter({
 
     const faqContent = document.getElementById("faq-content");
     if (faqContent) {
-      faqContent.scrollIntoView({
+      const y = faqContent.getBoundingClientRect().top + window.scrollY - 100;
+      window.scrollTo({
+        top: y,
         behavior: "smooth",
-        block: "start",
       });
     }
   };
 
   return (
     <div className="faq-category-card">
-      <h3>Browse by category</h3>
+      <h3>FAQ Categories</h3>
 
       <div className="faq-category-list">
         {categories.map((category) => (
@@ -29,7 +30,6 @@ export default function FAQCategoryFilter({
             onClick={() => handleCategoryClick(category.id)}
           >
             <span>{category.label}</span>
-            <span>{category.count}</span>
           </button>
         ))}
       </div>
