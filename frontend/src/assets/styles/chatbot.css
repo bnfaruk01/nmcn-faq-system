@@ -40,10 +40,10 @@
 .chatbot-panel {
   position: absolute;
   right: 0;
-  bottom: 86px;
-  width: 360px;
+  bottom: 72px;
+  width: 380px;
   max-width: calc(100vw - 24px);
-  height: 500px;
+  height: 540px;
   background: rgba(10, 31, 18, 0.96);
   border: 1px solid rgba(90, 170, 110, 0.18);
   border-radius: 24px;
@@ -78,7 +78,7 @@
   color: white;
   display: grid;
   place-items: center;
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 800;
 }
 
@@ -114,7 +114,7 @@
 
 .chatbot-message {
   max-width: 82%;
-  padding: 0.85rem 1rem;
+  padding: 0.9rem 1rem;
   border-radius: 18px;
   font-size: 0.95rem;
   line-height: 1.55;

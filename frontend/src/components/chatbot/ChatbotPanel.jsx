@@ -1,23 +1,36 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { askChatbot } from "../../services/faqService";
 import ChatbotMessage from "./ChatbotMessage";
 
-const suggestions = [
+const defaultSuggestions = [
   "How do I renew my licence?",
   "I forgot my password",
   "How can I verify certificates?",
+  "How do I contact support?",
 ];
 
 export default function ChatbotPanel({ onClose }) {
   const [messages, setMessages] = useState([
     {
       sender: "bot",
-      text: "Hello. I am the NMCN support assistant. Ask me a question about licensing, registration, portal access, or verification.",
+      text: "Hello. Welcome to NMCN Support.\n\nI can help with licence renewal, registration, portal access, verification, and support questions.",
     },
   ]);
 
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+  const [suggestions, setSuggestions] = useState(defaultSuggestions);
+
+  const messagesEndRef = useRef(null);
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages, loading]);
+
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, []);
 
   const sendMessage = async (textToSend = input) => {
     if (!textToSend.trim() || loading) return;
@@ -39,15 +52,30 @@ export default function ChatbotPanel({ onClose }) {
             text: result.answer,
           },
         ]);
+
+        setSuggestions([
+          "Tell me about registration",
+          "How do I reset my password?",
+          "How do I contact support?",
+        ]);
       } else {
+        const fallbackText = result.follow_up
+          ? `${result.message}\n\n${result.follow_up}`
+          : result.message ||
+            "I could not find a clear answer for that right now.";
+
         setMessages((prev) => [
           ...prev,
           {
             sender: "bot",
-            text:
-              result.message ||
-              "Sorry, I could not find an answer to that. You can send it to support for help.",
+            text: fallbackText,
           },
+        ]);
+
+        setSuggestions([
+          "How do I renew my licence?",
+          "How do I contact support?",
+          "Tell me about portal access",
         ]);
       }
     } catch (error) {
@@ -62,6 +90,9 @@ export default function ChatbotPanel({ onClose }) {
       ]);
     } finally {
       setLoading(false);
+      setTimeout(() => {
+        inputRef.current?.focus();
+      }, 100);
     }
   };
 
@@ -71,8 +102,8 @@ export default function ChatbotPanel({ onClose }) {
         <div className="chatbot-header-left">
           <div className="chatbot-ai-badge">AI</div>
           <div>
-            <h3>NMCN AI Assistant</h3>
-            <p>Instant support and guidance</p>
+            <h3>NMCN Support</h3>
+            <p>Ask a question and get help fast</p>
           </div>
         </div>
 
@@ -91,10 +122,14 @@ export default function ChatbotPanel({ onClose }) {
         ))}
 
         {loading && (
-          <div className="chatbot-message bot">
-            Thinking...
+          <div className="chatbot-message bot chatbot-typing">
+            <span></span>
+            <span></span>
+            <span></span>
           </div>
         )}
+
+        <div ref={messagesEndRef}></div>
       </div>
 
       <div className="chatbot-suggestions">
@@ -113,8 +148,9 @@ export default function ChatbotPanel({ onClose }) {
       <div className="chatbot-input-wrap">
         <div className="chatbot-input-box">
           <input
+            ref={inputRef}
             type="text"
-            placeholder="Ask a question..."
+            placeholder="Type your question here..."
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => {

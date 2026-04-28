@@ -1,3 +1,13 @@
 export default function ChatbotMessage({ sender, text }) {
-  return <div className={`chatbot-message ${sender}`}>{text}</div>;
+  const lines = String(text || "").split("\n");
+
+  return (
+    <div className={`chatbot-message ${sender}`}>
+      {lines.map((line, index) => (
+        <p key={index} className="chatbot-message-line">
+          {line}
+        </p>
+      ))}
+    </div>
+  );
 }
